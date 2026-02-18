@@ -16,10 +16,14 @@
 # limitations under the License.
 ################################################################################
 
+import os
+import sys
+
 from setuptools import setup, find_packages
 
 # These are safe to import inside setup.py as the only external dependency
 # is setuptools and that is already available
+sys.path.insert(0, os.path.dirname(__file__))
 from katversion.build import setup_versioning
 
 
