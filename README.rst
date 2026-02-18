@@ -48,17 +48,23 @@ The format of our version string is:
 Typical Usage
 -------------
 
-Add this to ``setup.py`` (handles installed packages):
+Add this to ``pyproject.toml`` and ``setup.py`` (handles installed packages):
+
+.. code:: toml
+
+        [build-system]
+        requires = ["setuptools>=64", "wheel", "packaging"]
+        build-backend = "setuptools.build_meta"
 
 .. code:: python
 
         from setuptools import setup
+        from katversion.build import setup_versioning
 
         setup(
             ...,
             # version=1.0,  # remove the version parameter as it will be overridden
-            setup_requires=['katversion'],
-            use_katversion=True,
+            **setup_versioning(),
             ...
         )
 
@@ -84,4 +90,4 @@ In addition, a command-line script for checking the version:
 
         # From inside your SCM subdirectory, run the following command
         # which will print the result to stdout:
-        $ kat-get-version.py
+        $ kat-get-version
