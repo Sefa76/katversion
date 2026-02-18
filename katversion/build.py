@@ -129,3 +129,39 @@ def setuptools_entry(dist, keyword, value):
     class KatVersionSdist(AddVersionToInitSdist, ExistingCustomSdist):
         """First perform existing sdist and then bake in version string."""
     dist.cmdclass['sdist'] = KatVersionSdist
+
+
+def setup_versioning(existing_cmdclass=None, path=None):
+    """Return setup kwargs for katversion without setuptools keyword entry points.
+
+    Parameters
+    ----------
+    existing_cmdclass : dict, optional
+        Existing setup.py ``cmdclass`` mapping. katversion wrappers are composed
+        on top of existing commands.
+    path : str, optional
+        Optional path passed to :func:`katversion.get_version`.
+
+    Returns
+    -------
+    kwargs : dict
+        Setup keyword arguments containing ``version`` and ``cmdclass``.
+    """
+    cmdclass = dict(existing_cmdclass or {})
+
+    existing_build_py = cmdclass.get('build_py', object)
+
+    class KatVersionBuildPy(AddVersionToInitBuildPy, existing_build_py):
+        """First perform existing build_py and then bake in version string."""
+
+    existing_sdist = cmdclass.get('sdist', object)
+
+    class KatVersionSdist(AddVersionToInitSdist, existing_sdist):
+        """First perform existing sdist and then bake in version string."""
+
+    cmdclass['build_py'] = KatVersionBuildPy
+    cmdclass['sdist'] = KatVersionSdist
+    return {
+        'version': get_version(path=path),
+        'cmdclass': cmdclass,
+    }

@@ -20,8 +20,7 @@ from setuptools import setup, find_packages
 
 # These are safe to import inside setup.py as the only external dependency
 # is setuptools and that is already available
-from katversion import get_version
-from katversion.build import AddVersionToInitBuildPy, AddVersionToInitSdist
+from katversion.build import setup_versioning
 
 
 with open('README.rst') as readme:
@@ -34,7 +33,7 @@ setup(name="katversion",
       author_email="cam@ska.ac.za",
       packages=find_packages(),
       include_package_data=True,
-      scripts=["scripts/kat-get-version.py"],
+      entry_points={"console_scripts": ["kat-get-version=katversion.cli:main"]},
       url='https://github.com/ska-sa/katversion',
       license="BSD",
       classifiers=[
@@ -58,13 +57,7 @@ setup(name="katversion",
           "Topic :: Software Development :: Libraries :: Python Modules"],
       platforms=["OS Independent"],
       keywords="versioning meerkat ska",
-      # Register 'use_katversion' keyword for use in participating setup.py files
-      entry_points={'distutils.setup_keywords':
-                    'use_katversion = katversion.build:setuptools_entry'},
-      # Handle our own version directly instead of via entry point
-      version=get_version(),
-      cmdclass={'build_py': AddVersionToInitBuildPy,
-                'sdist': AddVersionToInitSdist},
+      **setup_versioning(),
       python_requires='>=2.6, !=3.0.*, !=3.1.*, !=3.2.*, <4',
       install_requires=[
           "packaging",
